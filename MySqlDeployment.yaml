@@ -1,0 +1,106 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: mysql-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: mysql
+#   template:
+#     metadata:
+#       labels:
+#         app: mysql
+#     spec:
+#       containers:
+#         - name: mysql
+#           image: mysql:5.7
+#           env:
+#             - name: MYSQL_ROOT_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysecret
+#                   key: MYSQL_ROOT_PASSWORD
+#             - name: MYSQL_DATABASE
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysecret
+#                   key: MYSQL_DATABASE
+#             - name: MYSQL_USER
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysecret
+#                   key: MYSQL_USER
+#             - name: MYSQL_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysecret
+#                   key: MYSQL_PASSWORD
+#           ports:
+#             - containerPort: 3306
+#           resources:
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mysql-service
+# spec:
+#   clusterIP: 10.96.52.20
+#   selector:
+#     app: mysql
+#   type: ClusterIP
+#   ports:
+#     - port: 3306
+#       targetPort: 3306
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "mysqldb"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      team: prod
+  template:
+    metadata:
+      labels:
+        team: prod
+    spec:
+      containers:
+        - name: "c1"
+          image: "mysql:5.7"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysecretbox
+                  key: p
+            - name: MYSQL_DATABASE
+              value: lwdb
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysecretbox
+                  key: u
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysecretbox
+                  key: p
+          resources:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb
+spec:
+  clusterIP: 10.99.187.110
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    team: prod
+  type: ClusterIP

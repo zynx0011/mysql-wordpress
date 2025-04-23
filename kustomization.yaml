@@ -1,0 +1,22 @@
+# apiVersion: kustomize.config.k8s.io/v1beta1
+# kind: Kustomization
+# metadata:
+#   name: kustomization
+# secretGenerator:
+#   - name: mysql-secret
+#     type: Opaque
+# resources:
+#   - MySqlSecret.yaml
+#   - MySQLDeployment.yaml
+#   - WordPressDeployment.yaml
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+secretGenerator:
+  - name: mysecretbox
+    literals:
+      - p=mypassword
+      - u=kunal
+resources:
+  - MySQLDeployment.yaml
+  - WordPressDeployment.yaml
